@@ -1,0 +1,67 @@
+{
+  "name": "figma-component-styles",
+  "displayName": "figma-component-styles",
+  "description": "Figma integraton",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.33.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:typescriptreact",
+    "onCommand:figma.connect",
+    "onCommand:figma.selectFile",
+    "onCommand:figma.addTeam",
+    "onView:figmaView"
+  ],
+  "prettier": {
+    "printWidth": 120
+  },
+  "main": "./out/extension.js",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "figmaView",
+          "name": "Figma"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "figma.connect",
+        "title": "Figma: Connect"
+      },
+      {
+        "command": "figma.selectFile",
+        "title": "Figma: Select File"
+      },
+      {
+        "command": "figma.addTeam",
+        "title": "Figma: Add Team"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "yarn run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^3.4.5",
+    "vscode": "^1.1.28",
+    "tslint": "^5.12.1",
+    "@types/node": "^10.12.21",
+    "@types/mocha": "^2.2.42"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "mobx": "^5.9.4",
+    "mobx-state-tree": "^3.14.0",
+    "mst-middlewares": "^3.14.0"
+  }
+}
