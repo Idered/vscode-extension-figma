@@ -1,7 +1,7 @@
 import { types } from "mobx-state-tree";
-import { Component } from "./types/component";
-import { Style } from "./types/style";
-import { Document } from "./types/document";
+import { Component } from "./figma/component";
+import { Style } from "./figma/style";
+import { Document } from "./figma/document";
 
 export const File = types.model("File", {
   document: Document,
