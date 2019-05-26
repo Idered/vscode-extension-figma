@@ -24,7 +24,7 @@
   "icon": "resources/icon.png",
   "galleryBanner": {
     "color": "#fff",
-    "theme": "dark"
+    "theme": "light"
   },
   "bugs": {
     "email": "support@kasper.io"
