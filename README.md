@@ -4,7 +4,11 @@
 
 ### Styles listing and copying CSS
 
-### Listing layer tree and
+![Styles listing](https://i.imgur.com/ma1rPqr.gif)
+
+### Listing layer tree and preview of top level layers
+
+![Layers tree view](https://i.imgur.com/IC3RjWJ.gif)
 
 ## Requirements
 

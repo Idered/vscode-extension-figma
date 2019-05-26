@@ -21,12 +21,17 @@
     "figma",
     "design"
   ],
+  "icon": "resources/icon.png",
   "galleryBanner": {
     "color": "#fff",
     "theme": "dark"
   },
   "bugs": {
     "email": "support@kasper.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Idered/vscode-extension-figma"
   },
   "activationEvents": [
     "onLanguage:typescriptreact",
