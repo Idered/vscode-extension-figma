@@ -12,6 +12,8 @@
   },
   // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
   "typescript.tsc.autoDetect": "off",
-  "editor.wordWrapColumn": 120,
-  "eslint.enable": false
+  "editor.wordWrapColumn": 100,
+  "eslint.enable": false,
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "npm.packageManager": "yarn"
 }

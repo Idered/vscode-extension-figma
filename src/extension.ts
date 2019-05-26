@@ -1,33 +1,58 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from "vscode";
-import { onSnapshot, addMiddleware } from "mobx-state-tree";
-import { simpleActionLogger } from "mst-middlewares";
-import { Store } from "./store/store";
-import { FigmaTreeView } from "./figma-tree-view";
+import * as vscode from "vscode"
+import {STORAGE_KEYS} from "./constants"
+import {Style} from "./store/figma/style"
+import {FigmaTreeView} from "./figma-tree-view"
+import {createStore} from "./utils/create-store"
+import {Instance} from "mobx-state-tree"
+import {FigmaTreeItem} from "./figma-tree-view/tree-item"
 
-const STORAGE_KEYS = {
-  TOKEN: "figma-api-token",
-  TEAMS: "figma-teams",
-  FILES: "figma-files"
-};
-
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  const store = Store.create({
-    token: context.globalState.get(STORAGE_KEYS.TOKEN),
-    teams: context.globalState.get(STORAGE_KEYS.TEAMS)
-  });
+  const store = createStore(context)
+  const tree = new FigmaTreeView(context, store)
+  let panel: vscode.WebviewPanel | undefined = undefined
 
-  addMiddleware(store, simpleActionLogger);
+  function getWebviewContent({
+    fileId,
+    fileName,
+    nodeId
+  }: {
+    fileId?: string
+    fileName?: string
+    nodeId?: string
+  }) {
+    return `
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Cat Coding</title>
+        </head>
+        <body style="padding: 0;">
+          <iframe
+            src="https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/file/${fileId}/${fileName}?node-id=${nodeId}"
+            allowfullscreen
+          ></iframe>
+          <style>
+            iframe {
+              border: none;
+              width: 100vw;
+              height: 100vh;
+            }
+          </style>
+        </body>
+      </html>
+    `
+  }
 
-  onSnapshot(store, snapshot => {
-    context.globalState.update(STORAGE_KEYS.TOKEN, snapshot.token);
-    context.globalState.update(STORAGE_KEYS.TEAMS, snapshot.teams);
-  });
-
-  const tree = new FigmaTreeView(context, store);
+  vscode.commands.registerCommand("extension.copyCSS", async (style: Instance<typeof Style>) => {
+    const editor = vscode.window.activeTextEditor
+    if (editor) {
+      editor.edit(editBuilder => {
+        editBuilder.replace(editor.selection, style.toCSS(editor.selection.start.character))
+      })
+    }
+  })
 
   // FIGMA: CONNECT
   context.subscriptions.push(
@@ -35,94 +60,136 @@ export function activate(context: vscode.ExtensionContext) {
       let token = await vscode.window.showInputBox({
         placeHolder: "Figma Personal Access Token",
         value: context.globalState.get(STORAGE_KEYS.TOKEN)
-      });
+      })
 
       if (token) {
-        store.setToken(token);
+        store.setToken(token)
+        tree.provider.refresh()
       }
     })
-  );
+  )
+
+  // FIGMA: VIEW LAYER
+  context.subscriptions.push(
+    vscode.commands.registerCommand("figma.viewLayer", async (node: FigmaTreeItem) => {
+      if (panel) {
+        // If we already have a panel, show it in the target column
+        panel.reveal()
+      } else {
+        // Otherwise, create a new panel
+        panel = vscode.window.createWebviewPanel(
+          "figma", // Identifies the type of the webview. Used internally
+          "Figma Preview", // Title of the panel displayed to the user
+          vscode.ViewColumn.Two,
+          {
+            enableScripts: true
+          }
+        )
+        // Reset when the current panel is closed
+        panel.onDidDispose(
+          () => {
+            panel = undefined
+          },
+          null,
+          context.subscriptions
+        )
+      }
+
+      if (panel && store.file && store.fileId && node.id) {
+        panel.webview.html = getWebviewContent({
+          fileId: store.fileId,
+          fileName: store.file.name,
+          nodeId: node.id
+        })
+      }
+    })
+  )
 
   // FIGMA: ADD TEAM
   context.subscriptions.push(
     vscode.commands.registerCommand("figma.addTeam", async () => {
-      let name = await vscode.window.showInputBox({ placeHolder: "Team name" });
-      let id = await vscode.window.showInputBox({ placeHolder: "Team ID" });
-
-      if (name && id) {
-        store.addTeam({ name, id });
-      }
+      let name = await vscode.window.showInputBox({placeHolder: "Team name"})
+      if (!name) return
+      let id = await vscode.window.showInputBox({placeHolder: "Team ID"})
+      if (!id) return
+      store.addTeam({name, id})
+      tree.provider.refresh()
     })
-  );
+  )
 
   // FIGMA: SELECT FILE
   context.subscriptions.push(
     vscode.commands.registerCommand("figma.selectFile", async () => {
+      let pick
+
       // Choose team
-      const teamItems = store.teams.map(item => ({
-        id: item.id,
-        label: item.name
-      }));
-      const teamChoice = await vscode.window.showQuickPick(teamItems, {
-        placeHolder: "Choose a team"
-      });
-      if (teamChoice === undefined) return;
-      const team = store.teams.find(item => item.id === teamChoice.id);
-      if (team === undefined) return;
+      pick = await vscode.window.showQuickPick(
+        store.teams.map(item => ({id: item.id, label: item.name})),
+        {
+          placeHolder: "Choose a team"
+        }
+      )
+
+      if (pick === undefined) return
+
+      store.setTeam(pick.id)
 
       // Load projects
-      const projects = await vscode.window.withProgress(
+      await vscode.window.withProgress(
         {
           title: "Loading projects...",
           location: vscode.ProgressLocation.Notification
         },
-        () => team.projects()
-      );
-      store.setProjects(projects);
+        () => store.loadProjects()
+      )
 
       // Choose project
-      const projectItems = store.projects.map(item => ({ label: item.name, id: item.id }));
-      const projectChoice = await vscode.window.showQuickPick(projectItems, {
-        placeHolder: "Choose a project"
-      });
-      if (projectChoice === undefined) return;
-      const project = store.projects.find(item => item.id === projectChoice.id);
-      if (project === undefined) return;
+      pick = await vscode.window.showQuickPick(
+        store.projects.map(item => ({label: item.name, id: item.id})),
+        {
+          placeHolder: "Choose a project"
+        }
+      )
+
+      if (pick === undefined) return
+
+      store.setProject(pick.id)
 
       // Load project files
-      const projectFiles = await vscode.window.withProgress(
+      await vscode.window.withProgress(
         {
           title: "Loading project files...",
           location: vscode.ProgressLocation.Notification
         },
-        () => project.files()
-      );
-      store.setProjectFiles(projectFiles);
+        () => store.loadProjectFiles()
+      )
 
       // Choose project file
-      const projectFileItems = store.projectFiles.map(item => ({ label: item.name, key: item.key }));
-      const projectFileChoice = await vscode.window.showQuickPick(projectFileItems, {
-        placeHolder: "Choose a project file"
-      });
-      if (projectFileChoice === undefined) return;
-      const projectFile = store.projectFiles.find(item => item.key === projectFileChoice.key);
-      if (projectFile === undefined) return;
+      pick = await vscode.window.showQuickPick(
+        store.projectFiles.map(item => ({label: item.name, id: item.key})),
+        {
+          placeHolder: "Choose a project file"
+        }
+      )
 
-      store.setProjectFile(projectFile);
+      if (pick === undefined) return
+
+      store.setProjectFile(pick.id)
 
       // Load selected project file
-      const file = await vscode.window.withProgress(
+      await vscode.window.withProgress(
         {
           title: "Loading project file...",
           location: vscode.ProgressLocation.Notification
         },
-        () => projectFile.get()
-      );
-      store.setFile(file);
-      tree.provider.refresh();
+        () => store.loadFile()
+      )
+
+      store.loadStyles().then(() => {
+        tree.provider.refresh()
+      })
     })
-  );
+  )
 }
 
-// this method is called when your extension is deactivated
 export function deactivate() {}

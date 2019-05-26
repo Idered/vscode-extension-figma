@@ -1,65 +1,61 @@
-# figma-component-styles README
-
-This is the README for your extension "figma-component-styles". After writing up a brief description, we recommend including the following sections.
+# Figma x VS Code
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Styles listing and copying CSS
 
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### Listing layer tree and
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+To use this extension, you need two things:
 
-## Extension Settings
+- Figma Personal Access Token
+- Team ID
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+### Figma Personal Access Token
 
-For example:
+1. Go to Account Settings in Figma application
+2. Click on `Create a new personal access token`
+3. Name your token
+4. Copy new token
+5. In VS Code open commands menu and execute `Figma: Connect` command
+6. Paste your figma token and press enter
 
-This extension contributes the following settings:
+### Team
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+You must be a part of any team to be able to browse and select files. To get your team id:
 
-## Known Issues
+1. Go to Figma web application
+2. Click on any team in the sidebar
+3. Copy id from url: `https://www.figma.com/files/team/ID/Eyedea`
+4. In VS Code open commands menu and execute `Figma: Add Team` command
+5. Type in your team name
+6. Paste team id and press enter
+7. You're now able to select any team file using `Figma: Select File` from command palette.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Limitations
+
+Browsing files works only for teams. You can't browse your drafts. In future, there will be support for adding single files by id.
+
+## Roadmap
+
+- [Commands] Add single file by id
+- [Tree View] Copy css of selected layer
+- [Tree View] Import images from figma to workspace
+- [Tree View] Copy layer text
+- [Tree View] Icon for each type of layer(group, frame, text, rectangle, etc.)
+- [Preview] Better embed something like Zeplin - select layer by click, see css of selected layer
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.1.0
 
-### 1.0.0
+Initial release:
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+- Connecting with figma
+- Adding teams
+- Loading a figma design
+- Loading design styles
+- Loading design layers
+- Preview of top level frames

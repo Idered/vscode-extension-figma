@@ -1,21 +1,21 @@
-import { types, IAnyModelType } from "mobx-state-tree";
-import { BlendMode } from "./blend-mode";
-import { NodeType } from "./node-type";
-import { Color } from "./color";
-import { Rectangle } from "./rectangle";
-import { LayoutConstraint } from "./layout-constraint";
-import { Paint } from "./paint";
-import { Effect } from "./effect";
-import { TypeStyle } from "./type-style";
-import { ExportSetting } from "./export-settings";
-import { Vector } from "./vector";
-import { Transform } from "./transform";
-import { LayoutGrid } from "./layout-grid";
+import {types, IAnyModelType} from "mobx-state-tree"
+import {BlendMode} from "./blend-mode"
+import {NodeType} from "./node-type"
+import {Color} from "./color"
+import {Rectangle} from "./rectangle"
+import {LayoutConstraint} from "./layout-constraint"
+import {Paint} from "./paint"
+import {Effect} from "./effect"
+import {TypeStyle} from "./type-style"
+import {ExportSetting} from "./export-settings"
+import {Vector} from "./vector"
+import {Transform} from "./transform"
+import {LayoutGrid} from "./layout-grid"
 
-const BooleanOperationType = types.enumeration("BooleanOperation", ["UNION", "INTERSECT", "SUBTRACT", "EXCLUDE"]);
-const StrokeAlignType = types.enumeration("StrokeAlign", ["INSIDE", "OUTSIDE", "CENTER"]);
-const StrokeCapType = types.enumeration("StrokeCap", ["NONE", "ROUND", "SQUARE", "LINE_ARROW", "TRIANGLE_ARROW"]);
-const StrokeJoinType = types.enumeration("StrokeJoin", ["MITTER", "BEVEL", "ROUND"]);
+const BooleanOperationType = types.enumeration("BooleanOperation", ["UNION", "INTERSECT", "SUBTRACT", "EXCLUDE"])
+const StrokeAlignType = types.enumeration("StrokeAlign", ["INSIDE", "OUTSIDE", "CENTER"])
+const StrokeCapType = types.enumeration("StrokeCap", ["NONE", "ROUND", "SQUARE", "LINE_ARROW", "TRIANGLE_ARROW"])
+const StrokeJoinType = types.enumeration("StrokeJoin", ["MITTER", "BEVEL", "ROUND"])
 
 export const Node = types.model("Node", {
   absoluteBoundingBox: types.maybe(Rectangle),
@@ -54,4 +54,4 @@ export const Node = types.model("Node", {
   styleOverrideTable: types.maybe(types.map(TypeStyle)),
   styles: types.maybe(types.map(types.string)),
   type: NodeType
-});
+})

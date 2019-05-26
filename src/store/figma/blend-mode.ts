@@ -1,4 +1,4 @@
-import { types } from "mobx-state-tree";
+import {types} from "mobx-state-tree"
 
 export const BlendMode = types.enumeration("BlendMode", [
   "PASS_THROUGH",
@@ -20,4 +20,4 @@ export const BlendMode = types.enumeration("BlendMode", [
   "SATURATION",
   "COLOR",
   "LUMINOSITY"
-]);
+])

@@ -1,4 +1,4 @@
-import { types } from "mobx-state-tree";
+import {types} from "mobx-state-tree"
 
 export const NodeType = types.enumeration("NodeType", [
   "DOCUMENT",
@@ -16,4 +16,4 @@ export const NodeType = types.enumeration("NodeType", [
   "REGULAR_POLYGON",
   "SLICE",
   "COMPONENT"
-]);
+])

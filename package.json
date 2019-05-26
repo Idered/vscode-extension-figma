@@ -1,14 +1,33 @@
 {
-  "name": "figma-component-styles",
-  "displayName": "figma-component-styles",
-  "description": "Figma integraton",
-  "version": "0.0.1",
+  "name": "figma",
+  "license": "MIT",
+  "author": {
+    "name": "Kasper Mikiewicz",
+    "email": "iam@kasper.io",
+    "url": "https://kasper.io"
+  },
+  "preview": true,
+  "displayName": "Figma",
+  "publisher": "idered",
+  "description": "Explore Figma designs without leaving your editor.",
+  "version": "0.0.0",
   "engines": {
     "vscode": "^1.33.0"
   },
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "figma",
+    "design"
+  ],
+  "galleryBanner": {
+    "color": "#fff",
+    "theme": "dark"
+  },
+  "bugs": {
+    "email": "support@kasper.io"
+  },
   "activationEvents": [
     "onLanguage:typescriptreact",
     "onCommand:figma.connect",
@@ -17,10 +36,27 @@
     "onView:figmaView"
   ],
   "prettier": {
-    "printWidth": 120
+    "printWidth": 100,
+    "semi": false,
+    "bracketSpacing": false
   },
   "main": "./out/extension.js",
   "contributes": {
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "figma.viewLayer",
+          "when": "false"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "figma.viewLayer",
+          "when": "viewItem =~ /FRAME_1|COMPONENT_1/",
+          "group": "inline"
+        }
+      ]
+    },
     "views": {
       "explorer": [
         {
@@ -32,15 +68,27 @@
     "commands": [
       {
         "command": "figma.connect",
-        "title": "Figma: Connect"
+        "title": "Connect",
+        "category": "Figma"
+      },
+      {
+        "command": "figma.viewLayer",
+        "title": "View",
+        "category": "Figma",
+        "icon": {
+          "dark": "resources/dark/eye.svg",
+          "light": "resources/light/eye.svg"
+        }
       },
       {
         "command": "figma.selectFile",
-        "title": "Figma: Select File"
+        "title": "Select File",
+        "category": "Figma"
       },
       {
         "command": "figma.addTeam",
-        "title": "Figma: Add Team"
+        "title": "Add Team",
+        "category": "Figma"
       }
     ]
   },
@@ -52,16 +100,18 @@
     "test": "yarn run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
-    "typescript": "^3.4.5",
-    "vscode": "^1.1.28",
-    "tslint": "^5.12.1",
+    "@types/mocha": "^2.2.42",
     "@types/node": "^10.12.21",
-    "@types/mocha": "^2.2.42"
+    "tslint": "^5.12.1",
+    "typescript": "^3.4.5",
+    "vscode": "^1.1.28"
   },
   "dependencies": {
+    "@types/traverse": "^0.6.32",
     "axios": "^0.18.0",
     "mobx": "^5.9.4",
     "mobx-state-tree": "^3.14.0",
-    "mst-middlewares": "^3.14.0"
+    "mst-middlewares": "^3.14.0",
+    "traverse": "^0.6.6"
   }
 }

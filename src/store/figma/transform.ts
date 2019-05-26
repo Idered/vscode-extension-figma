@@ -1,3 +1,3 @@
-import { types } from "mobx-state-tree";
+import {types} from "mobx-state-tree"
 
-export const Transform = types.array(types.array(types.number));
+export const Transform = types.array(types.array(types.number))
