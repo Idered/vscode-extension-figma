@@ -10,7 +10,7 @@
   "displayName": "Figma",
   "publisher": "idered",
   "description": "Explore Figma designs without leaving your editor.",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.33.0"
   },
