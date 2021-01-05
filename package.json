@@ -113,7 +113,7 @@
   },
   "dependencies": {
     "@types/traverse": "^0.6.32",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "mobx": "^5.9.4",
     "mobx-state-tree": "^3.14.0",
     "mst-middlewares": "^3.14.0",
